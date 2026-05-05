@@ -181,13 +181,6 @@ Centurion University of Technology and Management, Bhubaneswar
 
 
 ##flowchart LR
-    A[🚗 Sensors ESP32] --> B[📡 Wireless Communication]
-    B --> C[🧠 Raspberry Pi Processing]
-    C --> D[🤖 AI/ML Analysis]
-    D --> E[☁️ Cloud Database]
-    E --> F[📊 Grafana Dashboard]
-    F --> G[👤 User Monitoring]
-
-    D --> H[🚨 Accident Detected]
-    H --> I[📍 GPS Location Sent]
-    H --> J[📸 Image/Video Saved]
+    <p align="center">
+  <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
+</p>
