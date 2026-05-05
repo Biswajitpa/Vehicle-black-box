@@ -179,9 +179,15 @@ Centurion University of Technology and Management, Bhubaneswar
 
 # ⚡ OPTION 2: Animated Style (Typing + Flow Combo)
 
-👉 This gives **animation feel** in README
 
+##flowchart LR
+    A[🚗 Sensors ESP32] --> B[📡 Wireless Communication]
+    B --> C[🧠 Raspberry Pi Processing]
+    C --> D[🤖 AI/ML Analysis]
+    D --> E[☁️ Cloud Database]
+    E --> F[📊 Grafana Dashboard]
+    F --> G[👤 User Monitoring]
 
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=22&duration=2000&pause=1000&color=00FFAA&center=true&vCenter=true&width=800&lines=🚗+Sensors+→+ESP32;📡+Wireless+Communication;🧠+Raspberry+Pi+Processing;🤖+AI+%2F+ML+Analysis;☁️+Cloud+Database;📊+Dashboard+Monitoring;🚨+Emergency+Alert+Triggered" />
-</p>
+    D --> H[🚨 Accident Detected]
+    H --> I[📍 GPS Location Sent]
+    H --> J[📸 Image/Video Saved]
