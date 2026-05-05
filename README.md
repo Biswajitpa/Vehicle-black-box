@@ -173,3 +173,7 @@ Centurion University of Technology and Management, Bhubaneswar
 ## 🔥 Tagline
 
 > Turning Vehicles into Intelligent Safety Systems using AI & IoT
+
+<p align="center">
+  <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
+</p>
