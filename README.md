@@ -1,18 +1,26 @@
 ## ⚡ AI & ML Powered | Edge AI + IoT + Embedded Systems
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,50:2c5364,100:FFD700&height=200&section=header&text=🚗%20Vehicle%20Black%20Box&fontSize=30&fontColor=ffffff"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,50:2c5364,100:FFD700&height=200&section=header&text=🚗%20Vehicle%20Black%20Box&fontSize=32&fontColor=ffffff&animation=fadeIn"/>
 </p>
 
+<br>
+
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=26&duration=2500&pause=1000&color=FFD700&center=true&vCenter=true&width=700&lines=🏆+Tech+Spark+2.0+IEEE+Winner;AI+%26+ML+Vehicle+Black+Box;Embedded+Systems+%7C+IoT+%7C+Edge+AI" />
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=26&duration=2500&pause=1000&color=FFD700&center=true&vCenter=true&width=750&lines=🏆+Tech+Spark+2.0+IEEE+Winner;AI+%26+ML+Vehicle+Black+Box;Embedded+Systems+%7C+IoT+%7C+Edge+AI" />
 </p>
+
+<br>
 
 <p align="center">
   <img src="https://img.shields.io/badge/🏆%20Winner-Tech%20Spark%202.0-FFD700?style=for-the-badge&logo=ieee&logoColor=black"/>
+  &nbsp;&nbsp;
   <img src="https://img.shields.io/badge/Event-IEEE-blue?style=for-the-badge"/>
+  &nbsp;&nbsp;
   <img src="https://img.shields.io/badge/Project-AI%20Vehicle%20Black%20Box-green?style=for-the-badge"/>
 </p>
+
+<br><br>
 
 ---
 
