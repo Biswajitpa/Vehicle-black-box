@@ -141,3 +141,11 @@ Reduce accident impact
 Provide real-time insights
 🎯 GitHub Badge Style (You can add in README)
 🏆 Winner | Tech Spark 2.0 – IEEE
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=28&duration=2500&pause=1000&color=FFD700&center=true&vCenter=true&width=700&lines=🏆+Tech+Spark+2.0+IEEE+Winner;AI+%26+ML+Vehicle+Black+Box+Project;Embedded+Systems+%7C+IoT+%7C+Edge+AI" alt="Typing Animation" />
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/🏆%20Winner-Tech%20Spark%202.0-FFD700?style=for-the-badge&logo=ieee&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Event-IEEE-blue?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Project-AI%20Vehicle%20Black%20Box-green?style=for-the-badge"/>
+</p>
