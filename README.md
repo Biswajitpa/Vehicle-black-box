@@ -7,9 +7,12 @@
 <br>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=26&duration=2500&pause=1000&color=FFD700&center=true&vCenter=true&width=750&lines=🏆+Tech+Spark+2.0+IEEE+Winner;AI+%26+ML+Vehicle+Black+Box;Embedded+Systems+%7C+IoT+%7C+Edge+AI" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,100:FFD700&height=200&text=Vehicle%20Black%20Box"/>
 </p>
 
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?lines=Tech+Spark+2.0+Winner;AI+Vehicle+Black+Box"/>
+</p>
 <br>
 
 <p align="center">
