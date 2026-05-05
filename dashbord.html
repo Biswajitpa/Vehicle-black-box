@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vehicle Black Box – Live Monitoring</title>
+
+  <style>
+    :root{
+      --bg0:#060812;
+      --bg1:#0b1430;
+      --card:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.10);
+      --text:#eaf0ff;
+      --muted:rgba(234,240,255,.68);
+      --glow:#39ffb6;
+      --glow2:#5b7cff;
+      --warn:#ffcc66;
+      --danger:#ff4d6d;
+      --ok:#39ffb6;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(57,255,182,.12), transparent 60%),
+        radial-gradient(900px 600px at 90% 15%, rgba(91,124,255,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* ====== NAV ====== */
+    .nav{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.25);
+      border-bottom:1px solid var(--stroke);
+    }
+    .nav-inner{
+      max-width:1200px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700; letter-spacing:.3px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background:var(--glow); box-shadow:0 0 18px rgba(57,255,182,.7);
+      animation:pulse 1.2s infinite;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.85}
+      50%{transform:scale(1.35); opacity:1}
+    }
+    .nav a{
+      color:var(--muted); text-decoration:none; font-size:14px;
+      padding:8px 10px; border-radius:12px;
+      transition: .2s ease;
+    }
+    .nav a:hover{background:rgba(255,255,255,.07); color:var(--text)}
+    .nav-right{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+    .nav .btn-mini{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:.2s ease;
+      font-weight:700;
+      font-size:13px;
+    }
+    .nav .btn-mini:hover{transform: translateY(-1px); box-shadow:0 10px 26px rgba(0,0,0,.25)}
+    .user-pill{
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      font-size:12px; color:var(--muted);
+      display:flex; gap:8px; align-items:center;
+    }
+    .user-pill b{color:var(--text)}
+
+    /* ====== HERO ====== */
+    .wrap{max-width:1200px; margin:0 auto; padding:0 18px}
+    .hero{
+      display:grid; grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+      padding:26px 0 10px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){ .hero{grid-template-columns:1fr; } }
+    .card{
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+    .hero-left{padding:22px 22px 18px; position:relative; overflow:hidden}
+    .badge{
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:13px; color:var(--muted);
+      padding:8px 12px; border:1px solid var(--stroke);
+      border-radius:999px; background: rgba(255,255,255,.05);
+    }
+    .badge .mini{width:7px; height:7px; border-radius:999px; background:var(--glow)}
+    h1{margin:14px 0 8px; font-size:42px; line-height:1.05}
+    @media (max-width: 520px){h1{font-size:34px}}
+    .sub{
+      color:var(--muted);
+      margin:0 0 16px;
+      line-height:1.55;
+      font-size:15px;
+      max-width: 60ch;
+    }
+    .cta{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin:16px 0 16px;
+    }
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:11px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      transition: .2s ease;
+      font-weight:600;
+      font-size:14px;
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(57,255,182,.95), rgba(91,124,255,.7));
+      color:#07101a;
+      border: none;
+    }
+    .btn:hover{transform: translateY(-1px); box-shadow:0 10px 26px rgba(0,0,0,.25)}
+    .meta-row{
+      display:grid; grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 520px){.meta-row{grid-template-columns:1fr}}
+    .meta{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+    }
+    .meta .k{font-size:12px; color:var(--muted)}
+    .meta .v{margin-top:4px; font-size:13px}
+
+    .blob{position:absolute; border-radius:999px; filter: blur(40px); opacity:.18; pointer-events:none}
+    .blob.a{width:260px;height:260px; background: var(--glow); left:-80px; top:-100px}
+    .blob.b{width:320px;height:320px; background: var(--glow2); right:-100px; top:-80px}
+    .blob.c{width:320px;height:320px; background: #ff4d6d; right:-140px; bottom:-160px; opacity:.09}
+
+    /* ====== Animated car + greeting ====== */
+    .welcome{
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      flex-wrap:wrap;
+    }
+    .welcome .left{display:flex; flex-direction:column; gap:2px}
+    .welcome .hi{font-weight:900; letter-spacing:.2px}
+    .welcome .small{font-size:12px; color:var(--muted)}
+    .road{
+      position:relative;
+      height:64px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.14) 0 14px, transparent 14px 32px);
+      overflow:hidden;
+      flex:1;
+      min-width: 220px;
+    }
+    .car{
+      position:absolute;
+      left:-80px;
+      top:50%;
+      transform: translateY(-50%);
+      width:76px; height:34px;
+      border-radius:10px;
+      background: linear-gradient(135deg, rgba(57,255,182,.95), rgba(91,124,255,.75));
+      box-shadow: 0 12px 30px rgba(0,0,0,.35), 0 0 22px rgba(57,255,182,.18);
+      animation: drive 5.5s linear infinite;
+    }
+    .car:before, .car:after{
+      content:"";
+      position:absolute; bottom:-8px;
+      width:16px; height:16px; border-radius:999px;
+      background: rgba(0,0,0,.55);
+      border:2px solid rgba(255,255,255,.18);
+      box-shadow: 0 0 14px rgba(0,0,0,.35);
+    }
+    .car:before{left:10px}
+    .car:after{right:10px}
+    .car .win{
+      position:absolute; left:10px; top:7px;
+      width:34px; height:14px; border-radius:6px;
+      background: rgba(7,16,26,.55);
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .car .name{
+      position:absolute; right:8px; top:7px;
+      font-size:10px; font-weight:900;
+      color: rgba(7,16,26,.92);
+      text-shadow: 0 1px 0 rgba(255,255,255,.25);
+      max-width: 36px;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    @keyframes drive{
+      0%{ left:-90px; }
+      100%{ left: calc(100% + 90px); }
+    }
+
+    /* ====== 3D CANVAS ====== */
+    .hero-right{position:relative; overflow:hidden}
+    .hero-right header{
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--stroke);
+    }
+    .hero-right header .title{font-weight:700}
+    .hero-right header .status{font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center}
+    .pill{
+      padding:6px 10px; border-radius:999px;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      font-size:12px; color:var(--muted);
+    }
+    #hero3d{width:100%; height:340px; display:block}
+
+    /* ====== SECTION ====== */
+    section{padding:18px 0 28px}
+    .section-title{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:14px; flex-wrap:wrap;
+      margin:10px 0 12px;
+    }
+    .section-title h2{margin:0; font-size:22px}
+    .section-title p{margin:0; color:var(--muted); font-size:13px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+
+    /* ====== LIVE CARDS ====== */
+    .live-cards{
+      display:grid; grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      padding:14px;
+    }
+    @media (max-width: 980px){ .live-cards{grid-template-columns: repeat(2, 1fr)} }
+    @media (max-width: 520px){ .live-cards{grid-template-columns: 1fr} }
+
+    .metric{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      position:relative;
+      overflow:hidden;
+    }
+    .metric .label{font-size:12px; color:var(--muted)}
+    .metric .value{margin-top:6px; font-size:22px; font-weight:800}
+    .metric .unit{font-size:12px; color:var(--muted); margin-left:6px}
+    .metric .trend{margin-top:8px; font-size:12px; color:var(--muted)}
+    .spark{
+      position:absolute; right:-20px; top:-20px;
+      width:120px; height:120px; border-radius:999px;
+      background: radial-gradient(circle at 40% 40%, rgba(57,255,182,.25), transparent 60%);
+      filter: blur(2px);
+    }
+
+    /* ====== CHARTS ====== */
+    .panel{padding:14px}
+    .panel header{
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .panel header .h{font-weight:800}
+    .panel header .small{font-size:12px; color:var(--muted)}
+    .chart-wrap{padding:10px; border-radius:16px; border:1px solid var(--stroke); background: rgba(255,255,255,.03)}
+    canvas.chart{width:100%; height:250px; display:block}
+
+    /* ====== MAP ====== */
+    .map-wrap{ padding:14px; }
+    .map-box{
+      position:relative;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+      height: 320px;
+    }
+    #mapCanvas{width:100%; height:100%; display:block}
+    .map-overlay{
+      position:absolute; left:12px; top:12px;
+      background: rgba(0,0,0,.30);
+      border:1px solid var(--stroke);
+      padding:10px 12px;
+      border-radius:14px;
+      backdrop-filter: blur(8px);
+      font-size:12px;
+      color:var(--muted);
+      max-width: 92%;
+    }
+    .map-overlay b{color:var(--text)}
+    .legend{
+      position:absolute; right:12px; bottom:12px;
+      background: rgba(0,0,0,.30);
+      border:1px solid var(--stroke);
+      padding:10px 12px;
+      border-radius:14px;
+      backdrop-filter: blur(8px);
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* ====== CAMERA ====== */
+    .camera-wrap{padding:14px}
+    .camera-box{
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .camera-top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; flex-wrap:wrap;
+      padding:12px;
+      border-bottom:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+    }
+    .camera-top .left{display:flex; flex-direction:column; gap:2px}
+    .camera-top .title{font-weight:900}
+    .camera-top .hint{font-size:12px; color:var(--muted)}
+    .camera-view{
+      position:relative;
+      height: 320px;
+      background: rgba(0,0,0,.25);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .camera-view img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .camera-fallback{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--muted);
+      font-size:13px;
+      padding:14px;
+      text-align:center;
+      pointer-events:none;
+    }
+
+    /* ====== ALERTS ====== */
+    .alerts{padding:14px}
+    .alert-row{ display:grid; grid-template-columns:1fr; gap:10px; }
+    .alert{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+    }
+    .badge2{
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .badge2.ok{border-color: rgba(57,255,182,.35); color: rgba(57,255,182,.95)}
+    .badge2.warn{border-color: rgba(255,204,102,.35); color: rgba(255,204,102,.95)}
+    .badge2.danger{border-color: rgba(255,77,109,.35); color: rgba(255,77,109,.95)}
+
+    footer{
+      padding:24px 0 36px;
+      color:var(--muted);
+      text-align:center;
+      font-size:12px;
+    }
+    html{scroll-behavior:smooth}
+
+    /* ====== LOGIN MODAL ====== */
+    .modal-backdrop{
+      position:fixed; inset:0; z-index:50;
+      display:none;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(8px);
+      align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .modal{
+      width:min(560px, 100%);
+      border-radius:18px;
+      border:1px solid var(--stroke);
+      background: rgba(10,16,34,.92);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      overflow:hidden;
+    }
+    .modal header{
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+    }
+    .modal header .t{font-weight:900}
+    .modal header button{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+    }
+    .modal .body{padding:16px}
+    .field{display:grid; gap:6px; margin-bottom:12px}
+    .field label{font-size:12px; color:var(--muted)}
+    .field input, .field select{
+      width:100%;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+    }
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
+    .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:14px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.03);
+    }
+    .error{
+      display:none;
+      margin-bottom:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,77,109,.35);
+      background: rgba(255,77,109,.08);
+      color: rgba(255,204,214,.95);
+      font-size:12px;
+    }
+    .okmsg{
+      display:none;
+      margin-bottom:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(57,255,182,.35);
+      background: rgba(57,255,182,.08);
+      color: rgba(190,255,235,.95);
+      font-size:12px;
+    }
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 16px;
+      border-bottom:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+    }
+    .tab{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      cursor:pointer;
+      font-size:13px;
+      font-weight:800;
+      transition:.2s ease;
+    }
+    .tab.active{
+      background: linear-gradient(135deg, rgba(57,255,182,.22), rgba(91,124,255,.18));
+      color: var(--text);
+    }
+    .hidden{display:none !important;}
+  </style>
+</head>
+
+<body>
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand"><span class="dot"></span> Vehicle Black Box</div>
+      <div class="nav-right">
+        <a href="#live">Live</a>
+        <a href="#charts">Charts</a>
+        <a href="#map">GPS Map</a>
+        <a href="#camera">Camera</a>
+        <a href="#alerts">Alerts</a>
+
+        <div class="user-pill" id="userPill" style="display:none">
+          <span>👤</span> <b id="userNamePill">—</b> <span style="opacity:.7">|</span>
+          <span>Device:</span> <b id="userDevicePill">—</b>
+        </div>
+
+        <button class="btn-mini" id="loginBtn" onclick="openLogin()">Login</button>
+        <button class="btn-mini" id="logoutBtn" style="display:none" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="card hero-left">
+        <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+
+        <div class="badge"><span class="mini"></span> ESP32 → Raspberry Pi → MySQL → Web Dashboard</div>
+        <h1>Animated Live Telemetry <span style="color:var(--glow)">+ GPS Tracking</span></h1>
+        <p class="sub">
+          <div> ✨ Every Journey, Watched with Care ✨</div>
+<div>Welcome to your car.</div>
+
+This smart dashboard is always by your side—quietly monitoring your vehicle’s health, safety, and live location in real time. When something doesn’t feel right, it gently alerts you early, helping you stay focused on the road with complete peace of mind.
+
+Whether it’s a fresh morning drive or a calm late-night journey, you’re never driving alone.
+Your safety, comfort, and confidence are always our top priority.
+
+<div>🚗💙 Enjoy the ride. Trust the journey. Drive safe.  Relax. Trust the journey.</div>
+        </p>
+
+        <div class="welcome">
+          <div class="left">
+            <div class="hi" id="welcomeLine">Welcome —</div>
+            <div class="small" id="welcomeSub">Please login to view your car data.</div>
+          </div>
+          <div class="road" aria-label="Animated car road">
+            <div class="car" id="carAnim">
+              <div class="win"></div>
+              <div class="name" id="carName">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta">
+          <button class="btn primary" onclick="scrollToId('live')">Open Live Monitoring</button>
+          <button class="btn" onclick="manualRefresh()">Refresh Now</button>
+          <button class="btn" onclick="toggleDemo()">Toggle Demo Data</button>
+          <button class="btn" onclick="openLogin()">Login / Register</button>
+        </div>
+
+        <div class="meta-row">
+          <div class="meta"><div class="k">API Base</div><div class="v" id="apiBaseText">—</div></div>
+          <div class="meta"><div class="k">Update Rate</div><div class="v"><span id="pollText">5</span>s polling</div></div>
+          <div class="meta"><div class="k">Connection</div><div class="v" id="connText">Checking…</div></div>
+        </div>
+      </div>
+
+      <div class="card hero-right">
+        <header>
+          <div class="title">3D / Neon Motion</div>
+          <div class="status">
+            <span class="pill" id="modePill">Mode: API</span>
+            <span class="pill" id="timePill">—</span>
+          </div>
+        </header>
+        <canvas id="hero3d"></canvas>
+      </div>
+    </div>
+
+    <!-- LIVE -->
+    <section id="live">
+      <div class="section-title">
+        <div>
+          <h2>Live Monitoring</h2>
+          <p>Latest reading from your database (auto updates).</p>
+        </div>
+        <div class="pill">Device: <span id="deviceId">—</span></div>
+      </div>
+
+      <div class="card">
+        <div class="live-cards">
+          <div class="metric">
+            <div class="spark"></div>
+            <div class="label">Temperature</div>
+            <div class="value"><span id="tempVal">—</span><span class="unit">°C</span></div>
+            <div class="trend" id="tempTrend">Waiting for data…</div>
+          </div>
+          <div class="metric">
+            <div class="spark"></div>
+            <div class="label">Humidity</div>
+            <div class="value"><span id="humVal">—</span><span class="unit">%</span></div>
+            <div class="trend" id="humTrend">Waiting for data…</div>
+          </div>
+          <div class="metric">
+            <div class="spark"></div>
+            <div class="label">Gas (MQ2)</div>
+            <div class="value"><span id="gasVal">—</span><span class="unit">ADC</span></div>
+            <div class="trend" id="gasTrend">Waiting for data…</div>
+          </div>
+          <div class="metric">
+            <div class="spark"></div>
+            <div class="label">Alcohol (MQ3)</div>
+            <div class="value"><span id="alcVal">—</span><span class="unit">ADC</span></div>
+            <div class="trend" id="alcTrend">Waiting for data…</div>
+          </div>
+          <div class="metric">
+            <div class="spark"></div>
+            <div class="label">Noise (Mic)</div>
+            <div class="value"><span id="micVal">—</span><span class="unit">Level</span></div>
+            <div class="trend" id="micTrend">Waiting for data…</div>
+          </div>
+          <div class="metric">
+            <div class="spark"></div>
+            <div class="label">Speed</div>
+            <div class="value"><span id="spdVal">—</span><span class="unit">km/h</span></div>
+            <div class="trend" id="spdTrend">Waiting for data…</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section id="charts">
+      <div class="section-title">
+        <div>
+          <h2>Trends</h2>
+          <p>Canvas charts (no library). Needs API history endpoint or demo mode.</p>
+        </div>
+        <div class="pill">History points: <span id="histCount">0</span></div>
+      </div>
+
+      <div class="grid">
+        <div class="card panel">
+          <header>
+            <div class="h">Temperature & Humidity</div>
+            <div class="small">Last N points</div>
+          </header>
+          <div class="chart-wrap">
+            <canvas class="chart" id="chartTH"></canvas>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <header>
+            <div class="h">Gas & Alcohol</div>
+            <div class="small">Last N points</div>
+          </header>
+          <div class="chart-wrap">
+            <canvas class="chart" id="chartGA"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map">
+      <div class="section-title">
+        <div>
+          <h2>GPS Live Map</h2>
+          <p>Simple canvas map (plots last positions). For real-world maps, integrate Mapbox/Leaflet later.</p>
+        </div>
+        <div class="pill">Lat: <span id="latVal">—</span> | Lon: <span id="lonVal">—</span></div>
+      </div>
+
+      <div class="card map-wrap">
+        <div class="map-box">
+          <canvas id="mapCanvas"></canvas>
+          <div class="map-overlay">
+            <div><b>Tip:</b> If marker stays at (0,0), GPS has no lock. Take device near window/outside.</div>
+            <div style="margin-top:6px">Showing last <b>50</b> points (trail).</div>
+          </div>
+          <div class="legend">● Latest | • Trail</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAMERA -->
+    <section id="camera">
+      <div class="section-title">
+        <div>
+          <h2>Camera View</h2>
+          <p>Live stream from Raspberry Pi camera (MJPEG). If you use another format, change endpoint in JS.</p>
+        </div>
+        <div class="pill">Source: <span id="cameraSrcText">—</span></div>
+      </div>
+
+      <div class="card camera-wrap">
+        <div class="camera-box">
+          <div class="camera-top">
+            <div class="left">
+              <div class="title">Live Camera</div>
+              <div class="hint">If blank: check Pi endpoint + CORS + camera service running.</div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+              <button class="btn" onclick="restartCamera()">Restart Stream</button>
+              <button class="btn" onclick="openSnapshot()">Open Snapshot</button>
+            </div>
+          </div>
+          <div class="camera-view">
+            <img id="cameraStream" alt="Vehicle camera stream" />
+            <div class="camera-fallback" id="cameraFallback">
+              Camera stream not loaded yet. Login and ensure Raspberry Pi provides a stream endpoint (example: <b>/video_feed</b>).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALERTS -->
+    <section id="alerts">
+      <div class="section-title">
+        <div>
+          <h2>Safety Alerts</h2>
+          <p>Client-side thresholds (edit values in code).</p>
+        </div>
+        <div class="pill">Last update: <span id="lastUpdate">—</span></div>
+      </div>
+
+      <div class="card alerts">
+        <div class="alert-row">
+          <div class="alert">
+            <div>
+              <div style="font-weight:800">Gas Alert (MQ2)</div>
+              <div style="color:var(--muted); font-size:12px">Triggers when MQ2 exceeds threshold.</div>
+            </div>
+            <div class="badge2" id="gasBadge">Waiting…</div>
+          </div>
+
+          <div class="alert">
+            <div>
+              <div style="font-weight:800">Alcohol Alert (MQ3)</div>
+              <div style="color:var(--muted); font-size:12px">Triggers when MQ3 exceeds threshold.</div>
+            </div>
+            <div class="badge2" id="alcBadge">Waiting…</div>
+          </div>
+
+          <div class="alert">
+            <div>
+              <div style="font-weight:800">Overspeed</div>
+              <div style="color:var(--muted); font-size:12px">Triggers when speed exceeds threshold.</div>
+            </div>
+            <div class="badge2" id="spdBadge">Waiting…</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+     THANK YOU FOR CHOSING OUR COMAPNY 🥳🥳🥳😊😊🤝🏻
+    </footer>
+  </div>
+
+  <!-- LOGIN / REGISTER MODAL -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Login">
+      <header>
+        <div class="t" id="modalTitle">Login to view your car data</div>
+        <button onclick="closeLogin()">Close</button>
+      </header>
+
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+        <button class="tab" id="tabRegister" onclick="switchTab('register')">New User / Register</button>
+      </div>
+
+      <div class="body">
+        <div class="error" id="loginErr">Invalid login. Try again.</div>
+        <div class="okmsg" id="okMsg">Done ✅</div>
+
+        <!-- LOGIN PANEL -->
+        <div id="loginPanel">
+          <div class="row">
+            <div class="field">
+              <label>Username</label>
+              <input id="loginUser" placeholder="e.g. her_user" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Display Name (shown on car + welcome)</label>
+              <input id="displayName" placeholder="e.g. Adyasha" />
+            </div>
+            <div class="field">
+              <label>Device ID (car / ESP32 id)</label>
+              <input id="deviceInput" placeholder="e.g. CAR_001" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>API Base (Raspberry Pi IP + port)</label>
+            <input id="apiInput" placeholder="http://10.160.16.202:5000" />
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px">
+            <button class="btn primary" onclick="doLogin()">Login</button>
+            <button class="btn" onclick="useGuest()">Continue as Guest (Demo)</button>
+          </div>
+
+          <div class="note">
+            <b>Note:</b> This is a frontend-only login (for project demo). For real security, add server-side auth (JWT/session).
+          </div>
+
+          <div class="note">
+            <b>Quick demo credentials:</b><br/>
+            Username: <b>her_user</b> &nbsp; Password: <b>1234</b><br/>
+            Username: <b>admin</b> &nbsp; Password: <b>admin</b>
+          </div>
+        </div>
+
+        <!-- REGISTER PANEL -->
+        <div id="registerPanel" class="hidden">
+          <div class="row">
+            <div class="field">
+              <label>New Username</label>
+              <input id="regUser" placeholder="e.g. satyabrata" />
+            </div>
+            <div class="field">
+              <label>New Password</label>
+              <input id="regPass" type="password" placeholder="Create password" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Default Display Name</label>
+              <input id="regName" placeholder="e.g. Satyabrata" />
+            </div>
+            <div class="field">
+              <label>Default Device ID</label>
+              <input id="regDevice" placeholder="e.g. CAR_002" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Default API Base</label>
+            <input id="regApi" placeholder="http://10.160.16.202:5000" />
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px">
+            <button class="btn primary" onclick="registerUser()">Submit / Create User</button>
+            <button class="btn" onclick="fillRegisterFromLogin()">Copy from Login Fields</button>
+          </div>
+
+          <div class="note">
+            <b>Register Info:</b> User is saved in your browser <b>localStorage</b>. (Demo only.)
+            For production, store users on server DB with hashed passwords.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*************************************************************
+     * 1) CONFIG
+     *************************************************************/
+    let API_BASE = "http://10.160.16.202:5000";
+    const POLL_MS = 5000;
+
+    const CAMERA_STREAM_PATH = "/video_feed";
+    const CAMERA_SNAPSHOT_PATH = "/snapshot";
+
+    /*************************************************************
+     * 2) DEMO MODE
+     *************************************************************/
+    let DEMO = false;
+
+    function toggleDemo(){
+      DEMO = !DEMO;
+      document.getElementById("modePill").textContent = DEMO ? "Mode: DEMO" : "Mode: API";
+      hardResetUI("Demo toggled");
+      manualRefresh();
+    }
+
+    /*************************************************************
+     * 3) Helpers
+     *************************************************************/
+    const $ = (id) => document.getElementById(id);
+    function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:"smooth"}); }
+    function fmt(n, d=2){
+      if(n === null || n === undefined || Number.isNaN(n)) return "—";
+      const x = Number(n);
+      if(!Number.isFinite(x)) return "—";
+      return x.toFixed(d);
+    }
+    function nowTime(){
+      const dt = new Date();
+      return dt.toLocaleString();
+    }
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+    /*************************************************************
+     * 4) Users (built-in + localStorage register)
+     *************************************************************/
+    const BUILTIN_USERS = [
+      { username:"her_user", password:"1234", defaultName:"Her", defaultDevice:"CAR_001", defaultApi:"http://10.160.16.202:5000" },
+      { username:"admin", password:"admin", defaultName:"Admin", defaultDevice:"CAR_001", defaultApi:"http://10.160.16.202:5000" },
+    ];
+
+    function loadRegisteredUsers(){
+      try{
+        const raw = localStorage.getItem("vbb_users");
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){
+        return [];
+      }
+    }
+    function saveRegisteredUsers(list){
+      localStorage.setItem("vbb_users", JSON.stringify(list));
+    }
+    function getAllUsers(){
+      return [...BUILTIN_USERS, ...loadRegisteredUsers()];
+    }
+
+    let user = {
+      loggedIn: false,
+      username: null,
+      displayName: null,
+      deviceId: null
+    };
+
+    /*************************************************************
+     * 5) Modal tabs
+     *************************************************************/
+    function switchTab(which){
+      $("loginErr").style.display = "none";
+      $("okMsg").style.display = "none";
+
+      const isLogin = which === "login";
+      $("tabLogin").classList.toggle("active", isLogin);
+      $("tabRegister").classList.toggle("active", !isLogin);
+
+      $("loginPanel").classList.toggle("hidden", !isLogin);
+      $("registerPanel").classList.toggle("hidden", isLogin);
+
+      $("modalTitle").textContent = isLogin ? "Login to view your car data" : "Create New User (Register)";
+    }
+
+    /*************************************************************
+     * 6) Login modal open/close
+     *************************************************************/
+    function openLogin(){
+      $("loginErr").style.display = "none";
+      $("okMsg").style.display = "none";
+      $("loginModal").style.display = "flex";
+
+      // default to login tab
+      switchTab("login");
+
+      $("apiInput").value = API_BASE;
+      $("loginUser").value = user.username || "";
+      $("displayName").value = user.displayName || "";
+      $("deviceInput").value = user.deviceId || "";
+      $("loginPass").value = "";
+
+      // fill register defaults too
+      $("regApi").value = API_BASE;
+
+      setTimeout(()=> $("loginUser").focus(), 50);
+    }
+    function closeLogin(){ $("loginModal").style.display = "none"; }
+
+    /*************************************************************
+     * 7) Session store
+     *************************************************************/
+    function saveSession(){
+      localStorage.setItem("vbb_session", JSON.stringify({
+        loggedIn: user.loggedIn,
+        username: user.username,
+        displayName: user.displayName,
+        deviceId: user.deviceId,
+        apiBase: API_BASE,
+        demo: DEMO
+      }));
+    }
+    function loadSession(){
+      try{
+        const raw = localStorage.getItem("vbb_session");
+        if(!raw) return;
+        const s = JSON.parse(raw);
+        if(s && s.apiBase) API_BASE = s.apiBase;
+        if(typeof s?.demo === "boolean") DEMO = s.demo;
+
+        if(s && s.loggedIn){
+          user.loggedIn = true;
+          user.username = s.username || null;
+          user.displayName = s.displayName || s.username || "User";
+          user.deviceId = s.deviceId || "CAR_001";
+        }
+      }catch(e){}
+    }
+
+    /*************************************************************
+     * 8) UI state control (Fix: no fake/old data before connect)
+     *************************************************************/
+    function greeting(){
+      const h = new Date().getHours();
+      if(h >= 5 && h < 12) return "Good Morning";
+      if(h >= 12 && h < 17) return "Good Afternoon";
+      if(h >= 17 && h < 21) return "Good Evening";
+      return "Good Night";
+    }
+
+    function setLoggedInUI(){
+      if(user.loggedIn){
+        $("userPill").style.display = "flex";
+        $("loginBtn").style.display = "none";
+        $("logoutBtn").style.display = "inline-block";
+        $("userNamePill").textContent = user.displayName || "User";
+        $("userDevicePill").textContent = user.deviceId || "—";
+      }else{
+        $("userPill").style.display = "none";
+        $("loginBtn").style.display = "inline-block";
+        $("logoutBtn").style.display = "none";
+      }
+
+      const g = greeting();
+      const name = user.loggedIn ? (user.displayName || "User") : (DEMO ? "Guest (Demo)" : "Guest");
+      $("carName").textContent = name;
+      $("welcomeLine").textContent = `Welcome, ${name} ✨`;
+      $("welcomeSub").textContent = user.loggedIn
+        ? `${g} — live data is filtered for device: ${user.deviceId}`
+        : (DEMO ? `${g} — demo data is running.` : `${g} — login to view your car data (or use Demo Mode).`);
+
+      $("apiBaseText").textContent = API_BASE;
+      $("cameraSrcText").textContent = (user.loggedIn || DEMO) ? `${API_BASE}${CAMERA_STREAM_PATH}` : "Login required";
+      $("deviceId").textContent = user.loggedIn ? user.deviceId : (DEMO ? "DEMO_CAR" : "—");
+      $("modePill").textContent = DEMO ? "Mode: DEMO" : "Mode: API";
+    }
+
+    function hardResetUI(reason=""){
+      // clear metrics
+      const ids = ["tempVal","humVal","gasVal","alcVal","micVal","spdVal","latVal","lonVal"];
+      ids.forEach(id => $(id).textContent = "—");
+      ["tempTrend","humTrend","gasTrend","alcTrend","micTrend","spdTrend"].forEach(id => $(id).textContent = "Waiting for data…");
+      $("histCount").textContent = "0";
+      $("lastUpdate").textContent = "—";
+      $("deviceId").textContent = user.loggedIn ? user.deviceId : (DEMO ? "DEMO_CAR" : "—");
+
+      // alerts
+      ["gasBadge","alcBadge","spdBadge"].forEach(id => {
+        const el = $(id);
+        el.classList.remove("ok","warn","danger");
+        el.textContent = reason ? `Waiting… (${reason})` : "Waiting…";
+      });
+
+      // clear charts & map
+      try{
+        const c1 = $("chartTH").getContext("2d");
+        c1.clearRect(0,0,$("chartTH").width,$("chartTH").height);
+        const c2 = $("chartGA").getContext("2d");
+        c2.clearRect(0,0,$("chartGA").width,$("chartGA").height);
+        const mc = $("mapCanvas").getContext("2d");
+        mc.clearRect(0,0,$("mapCanvas").width,$("mapCanvas").height);
+      }catch(e){}
+    }
+
+    function setConn(ok, msg){
+      $("connText").textContent = ok ? "Connected ✅" : (msg || "Disconnected ❌");
+      $("connText").style.color = ok ? "rgba(57,255,182,.95)" : "rgba(255,204,102,.95)";
+    }
+
+    /*************************************************************
+     * 9) Login / Logout / Register
+     *************************************************************/
+    function doLogin(){
+      const username = $("loginUser").value.trim();
+      const password = $("loginPass").value.trim();
+      const displayName = $("displayName").value.trim();
+      const deviceId = $("deviceInput").value.trim();
+      const apiBaseInput = $("apiInput").value.trim();
+
+      const hit = getAllUsers().find(u => u.username === username && u.password === password);
+      if(!hit){
+        $("loginErr").style.display = "block";
+        return;
+      }
+
+      user.loggedIn = true;
+      user.username = username;
+      user.displayName = displayName || hit.defaultName || username;
+      user.deviceId = deviceId || hit.defaultDevice || "CAR_001";
+      if(apiBaseInput) API_BASE = apiBaseInput;
+
+      DEMO = false; // login means real API mode
+      saveSession();
+      closeLogin();
+
+      setLoggedInUI();
+      hardResetUI("Login success");
+      setCameraSource();
+      manualRefresh();
+    }
+
+    function useGuest(){
+      user.loggedIn = false;
+      user.username = null;
+      user.displayName = null;
+      user.deviceId = null;
+
+      DEMO = true;
+      saveSession();
+      closeLogin();
+
+      setLoggedInUI();
+      hardResetUI("Demo mode");
+      setCameraSource();
+      manualRefresh();
+    }
+
+    function logout(){
+      user.loggedIn = false;
+      user.username = null;
+      user.displayName = null;
+      user.deviceId = null;
+
+      DEMO = false;
+      localStorage.removeItem("vbb_session");
+
+      setLoggedInUI();
+      hardResetUI("Logged out");
+      setCameraSource();
+      setConn(false, "Please login (or use Demo Mode)");
+    }
+
+    function fillRegisterFromLogin(){
+      $("regUser").value = $("loginUser").value.trim();
+      $("regName").value = $("displayName").value.trim();
+      $("regDevice").value = $("deviceInput").value.trim();
+      $("regApi").value = $("apiInput").value.trim() || API_BASE;
+      $("regPass").value = $("loginPass").value.trim();
+    }
+
+    function registerUser(){
+      $("loginErr").style.display = "none";
+      $("okMsg").style.display = "none";
+
+      const username = $("regUser").value.trim();
+      const password = $("regPass").value.trim();
+      const defaultName = $("regName").value.trim() || username;
+      const defaultDevice = $("regDevice").value.trim() || "CAR_001";
+      const defaultApi = $("regApi").value.trim() || API_BASE;
+
+      if(!username || !password){
+        $("loginErr").textContent = "Please enter username & password to register.";
+        $("loginErr").style.display = "block";
+        return;
+      }
+
+      const all = getAllUsers();
+      if(all.some(u => u.username === username)){
+        $("loginErr").textContent = "Username already exists. Choose another.";
+        $("loginErr").style.display = "block";
+        return;
+      }
+
+      const reg = loadRegisteredUsers();
+      reg.push({ username, password, defaultName, defaultDevice, defaultApi });
+      saveRegisteredUsers(reg);
+
+      $("okMsg").textContent = "User created ✅ Now you can login with this username/password.";
+      $("okMsg").style.display = "block";
+
+      // also auto-fill login
+      $("loginUser").value = username;
+      $("loginPass").value = password;
+      $("displayName").value = defaultName;
+      $("deviceInput").value = defaultDevice;
+      $("apiInput").value = defaultApi;
+      API_BASE = defaultApi;
+      $("apiBaseText").textContent = API_BASE;
+    }
+
+    /*************************************************************
+     * 10) Fake 3D Neon Particles (canvas)
+     *************************************************************/
+    const heroCanvas = $("hero3d");
+    const hctx = heroCanvas.getContext("2d");
+    let W=0,H=0, particles=[];
+
+    function resizeHero(){
+      const rect = heroCanvas.getBoundingClientRect();
+      heroCanvas.width = Math.floor(rect.width * devicePixelRatio);
+      heroCanvas.height = Math.floor(rect.height * devicePixelRatio);
+      W = heroCanvas.width; H = heroCanvas.height;
+    }
+    function initParticles(){
+      particles = [];
+      const count = 140;
+      for(let i=0;i<count;i++){
+        particles.push({
+          x:(Math.random()-0.5)*2,
+          y:(Math.random()-0.5)*2,
+          z:Math.random()*1.8+0.2,
+          vx:(Math.random()-0.5)*0.003,
+          vy:(Math.random()-0.5)*0.003,
+          vz:(Math.random()-0.5)*0.002
+        });
+      }
+    }
+    function drawHero(t){
+      if(!W || !H) return;
+      hctx.clearRect(0,0,W,H);
+
+      const g = hctx.createLinearGradient(0,0,W,H);
+      g.addColorStop(0, "rgba(57,255,182,.10)");
+      g.addColorStop(0.5, "rgba(91,124,255,.10)");
+      g.addColorStop(1, "rgba(255,77,109,.06)");
+      hctx.fillStyle = g;
+      hctx.fillRect(0,0,W,H);
+
+      const cx = W*0.5, cy=H*0.52;
+      const scale = Math.min(W,H)*0.30;
+
+      const ang = t*0.0004;
+      hctx.save();
+      hctx.translate(cx,cy);
+      hctx.rotate(ang);
+      for(let i=0;i<6;i++){
+        hctx.beginPath();
+        hctx.strokeStyle = i%2? "rgba(57,255,182,.25)" : "rgba(91,124,255,.22)";
+        hctx.lineWidth = (2 + i*0.5)*devicePixelRatio;
+        const r = scale*(0.60 + i*0.07);
+        hctx.ellipse(0,0,r,r*0.55, i*0.25, 0, Math.PI*2);
+        hctx.stroke();
+      }
+      hctx.restore();
+
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy; p.z += p.vz;
+        if(p.z < 0.2 || p.z > 2.0) p.vz *= -1;
+        if(p.x < -1.2 || p.x > 1.2) p.vx *= -1;
+        if(p.y < -1.2 || p.y > 1.2) p.vy *= -1;
+
+        const px = cx + (p.x / p.z) * scale;
+        const py = cy + (p.y / p.z) * scale;
+        const pr = (2.2 / p.z) * devicePixelRatio;
+
+        const glow = p.z < 1 ? "rgba(57,255,182,.75)" : "rgba(91,124,255,.70)";
+        hctx.beginPath();
+        hctx.fillStyle = glow;
+        hctx.globalAlpha = clamp(1.2 - p.z*0.45, 0.15, 0.95);
+        hctx.arc(px,py,pr,0,Math.PI*2);
+        hctx.fill();
+        hctx.globalAlpha = 1;
+      }
+
+      $("timePill").textContent = new Date().toLocaleTimeString();
+    }
+    function raf(t){
+      drawHero(t);
+      requestAnimationFrame(raf);
+    }
+
+    /*************************************************************
+     * 11) Charts (no libraries)
+     *************************************************************/
+    function resizeCanvasToCSS(canvas){
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * devicePixelRatio);
+      canvas.height = Math.floor(rect.height * devicePixelRatio);
+    }
+
+    function drawLineChart(canvas, series){
+      resizeCanvasToCSS(canvas);
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
+
+      ctx.clearRect(0,0,w,h);
+      ctx.fillStyle = "rgba(255,255,255,.02)";
+      ctx.fillRect(0,0,w,h);
+
+      const pad = 18*devicePixelRatio;
+      const innerW = w - pad*2;
+      const innerH = h - pad*2;
+
+      let minV = Infinity, maxV = -Infinity;
+      for(const s of series){
+        for(const v of s.data){
+          if(v === null || v === undefined || Number.isNaN(v)) continue;
+          minV = Math.min(minV, v);
+          maxV = Math.max(maxV, v);
+        }
+      }
+      if(!Number.isFinite(minV) || !Number.isFinite(maxV) || minV === maxV){
+        minV = 0; maxV = 1;
+      }else{
+        const range = maxV - minV;
+        minV -= range*0.08;
+        maxV += range*0.08;
+      }
+
+      ctx.strokeStyle = "rgba(255,255,255,.08)";
+      ctx.lineWidth = 1*devicePixelRatio;
+      const gridLines = 4;
+      for(let i=0;i<=gridLines;i++){
+        const y = pad + (innerH*(i/gridLines));
+        ctx.beginPath();
+        ctx.moveTo(pad,y);
+        ctx.lineTo(pad+innerW,y);
+        ctx.stroke();
+      }
+
+      const n = Math.max(...series.map(s => s.data.length));
+      if(n < 2){
+        ctx.fillStyle = "rgba(234,240,255,.55)";
+        ctx.font = `${12*devicePixelRatio}px ui-sans-serif`;
+        ctx.fillText("No history yet.", pad, pad + 16*devicePixelRatio);
+        return;
+      }
+
+      series.forEach((s, idx) => {
+        const stroke = s.stroke || (idx%2 ? "rgba(57,255,182,.85)" : "rgba(91,124,255,.85)");
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 2.2*devicePixelRatio;
+        ctx.beginPath();
+
+        let started = false;
+        for(let i=0;i<s.data.length;i++){
+          const v = s.data[i];
+          if(v === null || v === undefined || Number.isNaN(v)) continue;
+          const x = pad + innerW*(i/(n-1));
+          const y = pad + innerH*(1 - ((v - minV)/(maxV - minV)));
+          if(!started){
+            ctx.moveTo(x,y);
+            started = true;
+          }else{
+            ctx.lineTo(x,y);
+          }
+        }
+        ctx.stroke();
+
+        const lv = s.data[s.data.length-1];
+        if(Number.isFinite(lv)){
+          const x = pad + innerW*((s.data.length-1)/(n-1));
+          const y = pad + innerH*(1 - ((lv - minV)/(maxV - minV)));
+          ctx.fillStyle = stroke;
+          ctx.beginPath();
+          ctx.arc(x,y,4.2*devicePixelRatio,0,Math.PI*2);
+          ctx.fill();
+        }
+      });
+    }
+
+    /*************************************************************
+     * 12) Map (simple canvas trail)
+     *************************************************************/
+    const mapC = $("mapCanvas");
+    function drawMapTrail(points){
+      const ctx = mapC.getContext("2d");
+      const rect = mapC.getBoundingClientRect();
+      mapC.width = Math.floor(rect.width * devicePixelRatio);
+      mapC.height = Math.floor(rect.height * devicePixelRatio);
+      const w = mapC.width, h = mapC.height;
+
+      ctx.clearRect(0,0,w,h);
+
+      const g = ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0, "rgba(57,255,182,.06)");
+      g.addColorStop(0.5, "rgba(91,124,255,.05)");
+      g.addColorStop(1, "rgba(255,77,109,.03)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,w,h);
+
+      if(!points || points.length < 2){
+        ctx.fillStyle = "rgba(234,240,255,.55)";
+        ctx.font = `${14*devicePixelRatio}px ui-sans-serif`;
+        ctx.fillText("No GPS history yet.", 18*devicePixelRatio, 28*devicePixelRatio);
+        return;
+      }
+
+      let minLat=Infinity, maxLat=-Infinity, minLon=Infinity, maxLon=-Infinity;
+      points.forEach(p=>{
+        if(!Number.isFinite(p.lat) || !Number.isFinite(p.lon)) return;
+        minLat=Math.min(minLat,p.lat); maxLat=Math.max(maxLat,p.lat);
+        minLon=Math.min(minLon,p.lon); maxLon=Math.max(maxLon,p.lon);
+      });
+      if(!Number.isFinite(minLat) || minLat===maxLat || minLon===maxLon){
+        return;
+      }
+
+      const pad = 20*devicePixelRatio;
+      const innerW = w - pad*2;
+      const innerH = h - pad*2;
+
+      function toXY(p){
+        const x = pad + ((p.lon - minLon)/(maxLon-minLon))*innerW;
+        const y = pad + (1-((p.lat - minLat)/(maxLat-minLat)))*innerH;
+        return {x,y};
+      }
+
+      ctx.fillStyle = "rgba(234,240,255,.18)";
+      points.slice(0,-1).forEach(p=>{
+        const {x,y} = toXY(p);
+        ctx.beginPath();
+        ctx.arc(x,y,2.5*devicePixelRatio,0,Math.PI*2);
+        ctx.fill();
+      });
+
+      ctx.strokeStyle = "rgba(91,124,255,.35)";
+      ctx.lineWidth = 2*devicePixelRatio;
+      ctx.beginPath();
+      points.forEach((p,i)=>{
+        const {x,y}=toXY(p);
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+
+      const last = points[points.length-1];
+      const {x,y}=toXY(last);
+      ctx.fillStyle = "rgba(57,255,182,.95)";
+      ctx.beginPath();
+      ctx.arc(x,y,6*devicePixelRatio,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    /*************************************************************
+     * 13) Camera
+     *************************************************************/
+    function cameraStreamUrl(){
+      if(!(user.loggedIn || DEMO)) return "";
+      if(DEMO) return ""; // no demo camera by default
+      return `${API_BASE}${CAMERA_STREAM_PATH}?device=${encodeURIComponent(user.deviceId || "")}&_=${Date.now()}`;
+    }
+    function cameraSnapshotUrl(){
+      if(!(user.loggedIn || DEMO)) return "";
+      if(DEMO) return "";
+      return `${API_BASE}${CAMERA_SNAPSHOT_PATH}?device=${encodeURIComponent(user.deviceId || "")}&_=${Date.now()}`;
+    }
+
+    function setCameraSource(){
+      const img = $("cameraStream");
+      const fb = $("cameraFallback");
+      const src = cameraStreamUrl();
+      $("cameraSrcText").textContent = src ? `${API_BASE}${CAMERA_STREAM_PATH}` : (DEMO ? "Demo mode (no camera)" : "Login required");
+
+      if(!src){
+        img.removeAttribute("src");
+        fb.style.display = "flex";
+        return;
+      }
+
+      fb.style.display = "none";
+      img.onerror = () => { fb.style.display = "flex"; };
+      img.onload = () => { fb.style.display = "none"; };
+      img.src = src;
+    }
+    function restartCamera(){ setCameraSource(); }
+    function openSnapshot(){
+      const url = cameraSnapshotUrl();
+      if(!url){
+        alert(DEMO ? "Demo mode has no snapshot." : "Please login first.");
+        return;
+      }
+      window.open(url, "_blank");
+    }
+
+    /*************************************************************
+     * 14) Data fetch + rendering
+     *************************************************************/
+    const THRESH = {
+      gasWarn: 450,
+      gasDanger: 650,
+      alcWarn: 350,
+      alcDanger: 550,
+      spdWarn: 70,
+      spdDanger: 95
+    };
+
+    let lastLatest = null;
+    let history = [];
+
+    function trendText(curr, prev, unit=""){
+      if(curr===null || curr===undefined || !Number.isFinite(curr)) return "—";
+      if(prev===null || prev===undefined || !Number.isFinite(prev)) return `Now: ${fmt(curr)}${unit}`;
+      const diff = curr - prev;
+      const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "•";
+      return `${arrow} ${fmt(diff)}${unit} vs last`;
+    }
+
+    function badge(el, level, text){
+      el.classList.remove("ok","warn","danger");
+      if(level==="ok") el.classList.add("ok");
+      if(level==="warn") el.classList.add("warn");
+      if(level==="danger") el.classList.add("danger");
+      el.textContent = text;
+    }
+
+    function computeAlert(val, warn, danger){
+      if(!Number.isFinite(val)) return {lvl:"warn", text:"No data"};
+      if(val >= danger) return {lvl:"danger", text:`DANGER (${Math.round(val)})`};
+      if(val >= warn) return {lvl:"warn", text:`WARN (${Math.round(val)})`};
+      return {lvl:"ok", text:`OK (${Math.round(val)})`};
+    }
+
+    function normalizeRow(r){
+      return {
+        ts: r.ts || r.timestamp || r.time || null,
+        device_id: r.device_id || r.deviceId || r.device || user.deviceId || null,
+        temperature: Number(r.temperature ?? r.temp ?? r.t ?? NaN),
+        humidity: Number(r.humidity ?? r.hum ?? r.h ?? NaN),
+        mq2_gas: Number(r.mq2_gas ?? r.gas ?? r.mq2 ?? NaN),
+        mq3_alcohol: Number(r.mq3_alcohol ?? r.alcohol ?? r.mq3 ?? NaN),
+        mic: Number(r.mic ?? r.noise ?? r.sound ?? NaN),
+        speed: Number(r.speed ?? r.spd ?? NaN),
+        lat: Number(r.lat ?? r.latitude ?? NaN),
+        lon: Number(r.lon ?? r.lng ?? r.longitude ?? NaN)
+      };
+    }
+
+    function renderLatest(r){
+      const row = normalizeRow(r || {});
+      $("deviceId").textContent = row.device_id || (DEMO ? "DEMO_CAR" : "—");
+
+      $("tempVal").textContent = Number.isFinite(row.temperature) ? fmt(row.temperature,1) : "—";
+      $("humVal").textContent  = Number.isFinite(row.humidity) ? fmt(row.humidity,1) : "—";
+      $("gasVal").textContent  = Number.isFinite(row.mq2_gas) ? Math.round(row.mq2_gas) : "—";
+      $("alcVal").textContent  = Number.isFinite(row.mq3_alcohol) ? Math.round(row.mq3_alcohol) : "—";
+      $("micVal").textContent  = Number.isFinite(row.mic) ? fmt(row.mic,0) : "—";
+      $("spdVal").textContent  = Number.isFinite(row.speed) ? fmt(row.speed,0) : "—";
+
+      const prev = lastLatest ? normalizeRow(lastLatest) : null;
+      $("tempTrend").textContent = trendText(row.temperature, prev?.temperature, "°C");
+      $("humTrend").textContent  = trendText(row.humidity, prev?.humidity, "%");
+      $("gasTrend").textContent  = trendText(row.mq2_gas, prev?.mq2_gas, "");
+      $("alcTrend").textContent  = trendText(row.mq3_alcohol, prev?.mq3_alcohol, "");
+      $("micTrend").textContent  = trendText(row.mic, prev?.mic, "");
+      $("spdTrend").textContent  = trendText(row.speed, prev?.speed, "km/h");
+
+      $("latVal").textContent = Number.isFinite(row.lat) ? fmt(row.lat,6) : "—";
+      $("lonVal").textContent = Number.isFinite(row.lon) ? fmt(row.lon,6) : "—";
+
+      const gasA = computeAlert(row.mq2_gas, THRESH.gasWarn, THRESH.gasDanger);
+      const alcA = computeAlert(row.mq3_alcohol, THRESH.alcWarn, THRESH.alcDanger);
+      const spdA = computeAlert(row.speed, THRESH.spdWarn, THRESH.spdDanger);
+      badge($("gasBadge"), gasA.lvl, gasA.text);
+      badge($("alcBadge"), alcA.lvl, alcA.text);
+      badge($("spdBadge"), spdA.lvl, spdA.text);
+
+      $("lastUpdate").textContent = nowTime();
+      lastLatest = r;
+    }
+
+    function renderHistory(rows){
+      history = (rows || []).map(normalizeRow);
+
+      // keep only valid points
+      history = history.filter(x =>
+        Number.isFinite(x.temperature) ||
+        Number.isFinite(x.humidity) ||
+        Number.isFinite(x.mq2_gas) ||
+        Number.isFinite(x.mq3_alcohol)
+      );
+
+      $("histCount").textContent = String(history.length);
+
+      const t = history.map(x => Number.isFinite(x.temperature) ? x.temperature : null);
+      const h = history.map(x => Number.isFinite(x.humidity) ? x.humidity : null);
+      const g = history.map(x => Number.isFinite(x.mq2_gas) ? x.mq2_gas : null);
+      const a = history.map(x => Number.isFinite(x.mq3_alcohol) ? x.mq3_alcohol : null);
+
+      drawLineChart($("chartTH"), [
+        { name:"Temp", data:t, stroke:"rgba(57,255,182,.85)" },
+        { name:"Hum",  data:h, stroke:"rgba(91,124,255,.85)" }
+      ]);
+
+      drawLineChart($("chartGA"), [
+        { name:"Gas", data:g, stroke:"rgba(255,204,102,.85)" },
+        { name:"Alc", data:a, stroke:"rgba(255,77,109,.75)" }
+      ]);
+
+      const gps = history
+        .filter(x => Number.isFinite(x.lat) && Number.isFinite(x.lon))
+        .slice(-50)
+        .map(x => ({lat:x.lat, lon:x.lon}));
+
+      drawMapTrail(gps);
+    }
+
+    function demoLatest(){
+      const base = Date.now();
+      return {
+        ts: base,
+        device_id: "DEMO_CAR",
+        temperature: 28 + Math.sin(base/50000)*2,
+        humidity: 55 + Math.cos(base/47000)*6,
+        mq2_gas: 400 + Math.sin(base/11000)*180,
+        mq3_alcohol: 260 + Math.cos(base/13000)*220,
+        mic: 40 + Math.sin(base/9000)*25,
+        speed: 42 + Math.sin(base/8000)*32,
+        lat: 20.2961 + Math.sin(base/70000)*0.0012,
+        lon: 85.8245 + Math.cos(base/70000)*0.0012
+      };
+    }
+    function demoHistory(n=120){
+      const out = [];
+      const start = Date.now() - n*5000;
+      for(let i=0;i<n;i++){
+        const t = start + i*5000;
+        out.push({
+          ts: t,
+          device_id: "DEMO_CAR",
+          temperature: 28 + Math.sin(t/50000)*2 + (Math.random()-0.5)*0.3,
+          humidity: 55 + Math.cos(t/47000)*6 + (Math.random()-0.5)*0.7,
+          mq2_gas: 400 + Math.sin(t/11000)*180 + (Math.random()-0.5)*25,
+          mq3_alcohol: 260 + Math.cos(t/13000)*220 + (Math.random()-0.5)*35,
+          mic: 40 + Math.sin(t/9000)*25 + (Math.random()-0.5)*4,
+          speed: 42 + Math.sin(t/8000)*32 + (Math.random()-0.5)*5,
+          lat: 20.2961 + Math.sin(t/70000)*0.0012,
+          lon: 85.8245 + Math.cos(t/70000)*0.0012
+        });
+      }
+      return out;
+    }
+
+    async function fetchLatest(){
+      const device = user.deviceId ? `?device=${encodeURIComponent(user.deviceId)}` : "";
+      const url = `${API_BASE}/api/latest${device}`;
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok) throw new Error(`Latest HTTP ${res.status}`);
+      return await res.json();
+    }
+
+    async function fetchHistory(limit=200){
+      const device = user.deviceId ? `&device=${encodeURIComponent(user.deviceId)}` : "";
+      const url = `${API_BASE}/api/history?limit=${limit}${device}`;
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok) throw new Error(`History HTTP ${res.status}`);
+      return await res.json();
+    }
+
+    /*************************************************************
+     * 15) FIXED: Don’t show data before connect
+     *************************************************************/
+    async function manualRefresh(){
+      $("pollText").textContent = String(Math.round(POLL_MS/1000));
+      $("apiBaseText").textContent = API_BASE;
+      setLoggedInUI();
+
+      try{
+        if(DEMO){
+          setConn(true, "Demo");
+          const l = demoLatest();
+          const h = demoHistory(140);
+          renderLatest(l);
+          renderHistory(h);
+          return;
+        }
+
+        // Not demo => must be logged in
+        if(!user.loggedIn){
+          setConn(false, "Please login (or use Demo Mode)");
+          hardResetUI("Not logged in");
+          return;
+        }
+
+        // logged in => fetch real API
+        const [latest, hist] = await Promise.all([ fetchLatest(), fetchHistory(200) ]);
+
+        setConn(true);
+
+        // only render AFTER successful fetch
+        renderLatest(latest);
+        const rows = Array.isArray(hist) ? hist : (hist.rows || hist.data || []);
+        renderHistory(rows);
+
+      }catch(err){
+        setConn(false, err?.message || "Fetch error");
+        // IMPORTANT: don’t show old values as “real”
+        hardResetUI("API error");
+        // keep camera fallback if needed
+      }
+    }
+
+    function startPolling(){
+      manualRefresh();
+      setInterval(manualRefresh, POLL_MS);
+    }
+
+    /*************************************************************
+     * 16) Boot
+     *************************************************************/
+    window.addEventListener("resize", () => {
+      resizeHero();
+      if(history && history.length) renderHistory(history);
+    });
+
+    setInterval(()=> setLoggedInUI(), 60*1000);
+
+    loadSession();
+    setLoggedInUI();
+    hardResetUI("Boot");
+    setCameraSource();
+
+    resizeHero();
+    initParticles();
+    requestAnimationFrame(raf);
+    startPolling();
+
+    $("loginModal").addEventListener("click", (e)=>{
+      if(e.target === $("loginModal")) closeLogin();
+    });
+  </script>
+</body>
+</html>
