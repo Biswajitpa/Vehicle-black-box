@@ -181,7 +181,7 @@ Centurion University of Technology and Management, Bhubaneswar
 
 👉 This gives **animation feel** in README
 
-```html
+
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=22&duration=2000&pause=1000&color=00FFAA&center=true&vCenter=true&width=800&lines=🚗+Sensors+→+ESP32;📡+Wireless+Communication;🧠+Raspberry+Pi+Processing;🤖+AI+%2F+ML+Analysis;☁️+Cloud+Database;📊+Dashboard+Monitoring;🚨+Emergency+Alert+Triggered" />
 </p>
