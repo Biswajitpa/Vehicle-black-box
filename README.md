@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?lines=Tech+Spark+2.0+Winner;AI+Vehicle+Black+Box IEE"/>
+  <img src="https://readme-typing-svg.demolab.com?lines=Tech+Spark+2.0+Winner;AI+Vehicle+Black+Box"/>
 </p>
 <br>
 
