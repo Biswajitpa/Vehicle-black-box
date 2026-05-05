@@ -174,6 +174,14 @@ Centurion University of Technology and Management, Bhubaneswar
 
 > Turning Vehicles into Intelligent Safety Systems using AI & IoT
 
+
+---
+
+# ⚡ OPTION 2: Animated Style (Typing + Flow Combo)
+
+👉 This gives **animation feel** in README
+
+```html
 <p align="center">
-  <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=22&duration=2000&pause=1000&color=00FFAA&center=true&vCenter=true&width=800&lines=🚗+Sensors+→+ESP32;📡+Wireless+Communication;🧠+Raspberry+Pi+Processing;🤖+AI+%2F+ML+Analysis;☁️+Cloud+Database;📊+Dashboard+Monitoring;🚨+Emergency+Alert+Triggered" />
 </p>
