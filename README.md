@@ -1,12 +1,6 @@
 ## ⚡ AI & ML Powered | Edge AI + IoT + Embedded Systems
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,50:2c5364,100:FFD700&height=200&section=header&text=🚗%20Vehicle%20Black%20Box&fontSize=32&fontColor=ffffff&animation=fadeIn"/>
-</p>
-
-<br>
-
-<p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,100:FFD700&height=200&text=Vehicle%20Black%20Box"/>
 </p>
 
