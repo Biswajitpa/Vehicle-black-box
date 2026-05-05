@@ -1,7 +1,9 @@
 # Vehicle-black-box
 🚗 AI & ML Powered Vehicle Black Box
 ⚡ Edge AI + IoT + Embedded Systems for Smart Automotive Safety
-<p align="center"> <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/512/external-black-box-aviation-flaticons-flat-flat-icons.png" width="120"/> </p> <p align="center"> <b>Real-Time Monitoring • Accident Detection • Intelligent Analysis • Cloud Connectivity</b> </p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/image.png" width="400"/>
+</p>
 🚀 Project Overview
 
 The AI & ML Powered Vehicle Black Box is an advanced automotive safety and monitoring system designed to enhance driver safety, accident analysis, and real-time vehicle intelligence.
