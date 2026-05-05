@@ -66,3 +66,105 @@ Unlike traditional systems, it:
 ---
 
 ## 🏗️ System Architecture
+Sensors (ESP32)
+↓
+Wireless Communication
+↓
+Raspberry Pi (AI Processing)
+↓
+Cloud Database
+↓
+Web Dashboard
+↓
+User Alerts
+
+
+---
+
+## 🔧 Hardware Components
+
+- 🧠 Raspberry Pi 4B  
+- 📡 ESP32  
+- 📍 GPS Module  
+- 📶 GSM Module  
+- 🍺 MQ-3 Sensor  
+- 🌡️ DHT11  
+- ⚙️ Hall Sensor  
+- 🎤 MAX9814 Mic  
+- 📷 Camera  
+- 🔋 Battery  
+- 💽 SD Card  
+
+---
+
+## 💻 Software Stack
+
+- 🐍 Python  
+- 👁️ OpenCV  
+- 🌐 Flask  
+- 🐧 Linux  
+- ☁️ Firebase / MySQL  
+- 📊 Grafana  
+- 🤖 TensorFlow Lite  
+
+---
+
+## ⚙️ Working Principle
+
+1. Sensors collect data  
+2. ESP32 sends data  
+3. Raspberry Pi processes it  
+4. AI detects anomalies  
+5. Data stored + cloud upload  
+
+### 🚨 Accident Case
+- Alert triggered  
+- GPS sent  
+- Evidence saved  
+
+---
+
+## 🔍 Research Gap
+
+### ❌ Traditional
+- No intelligence  
+- No alerts  
+
+### ✅ Our System
+- AI prediction  
+- Real-time alerts  
+- Smart integration  
+
+---
+
+## 📈 Future Scope
+
+- 🚘 Autonomous systems  
+- 📱 Mobile app  
+- 🤖 Deep learning  
+- 🚦 Smart traffic  
+- 🛰️ 5G  
+
+---
+
+## 👨‍💻 Contributors
+- **Biswajit Pattanaik**
+
+---
+
+## 🏫 Institution
+Centurion University of Technology and Management, Bhubaneswar
+
+---
+
+## 🌟 Impact
+
+- Saves lives  
+- Reduces accidents  
+- Provides real-time insights  
+
+---
+
+## 🔥 Tagline
+
+> Turning Vehicles into Intelligent Safety Systems using AI & IoT
