@@ -177,10 +177,9 @@ Centurion University of Technology and Management, Bhubaneswar
 
 ---
 
-# ⚡ OPTION 2: Animated Style (Typing + Flow Combo)
 
 
-##flowchart LR
+## flowchart LR
     <p align="center">
   <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
 </p>
