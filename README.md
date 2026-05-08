@@ -180,7 +180,8 @@ Centurion University of Technology and Management, Bhubaneswar
 
 
 ## flowchart LR
-    <p align="center">
+
+<p align="center">
   <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
 </p>
 ## Circuit Digram
