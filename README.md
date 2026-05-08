@@ -184,5 +184,5 @@ Centurion University of Technology and Management, Bhubaneswar
 <p align="center">
   <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
 </p>
-## Circuit Digram
+##  Circuit Digram
 <img width="2000" height="913" alt="image" src="https://github.com/user-attachments/assets/e962832a-b9a9-4b26-ba5a-5027c4e096b3" />
