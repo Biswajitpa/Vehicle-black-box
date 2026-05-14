@@ -1,4 +1,4 @@
-## ⚡ AI & ML Powered | Edge AI + IoT + Embedded Systems
+## 🚗 Edge AI Powered Vehicle Black Box using Embedded Systems and IoT
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,100:FFD700&height=200&text=Vehicle%20Black%20Box"/>
@@ -21,168 +21,86 @@
 
 ---
 
-## 🚀 Project Overview
+## 📌Overview
+The Edge AI Powered Vehicle Black Box is an intelligent automotive safety and monitoring system designed to enhance road safety, accident detection, and real-time vehicle analytics. Built using Raspberry Pi, ESP-based embedded modules, sensors, camera, and cloud technologies, this system continuously monitors vehicle conditions and driver behavior.Unlike traditional black boxes that only store data, this system integrates AI and Machine Learning at the edge, enabling real-time decision-making, predictive risk analysis, and instant emergency response.
 
-The **AI & ML Powered Vehicle Black Box** enhances:
+## 🎯Key Features
+- 🚨 Real-time accident detection and emergency alert system
+- 📍 Live GPS tracking and route monitoring
+- 🧠 AI/ML-based driver behavior and risk prediction
+- 📡 GSM-based SMS/call emergency notifications
+- 📷 Continuous video and image recording using Raspberry Pi Camera
+- 🌡️ Environmental monitoring (temperature & humidity)
+- 🍺 Alcohol detection for driver safety (MQ-3 sensor)
+- 💾 Local + cloud data storage (SD card + Firebase)
+- 📊 Web dashboard for live monitoring and analytics
+- 🔊 In-cabin audio recording for incident analysis
 
-- 🚘 Driver Safety  
-- 📊 Accident Analysis  
-- ⚡ Real-Time Intelligence  
+## 🧠System Intelligence (AI Layer)
+- The system uses Edge AI techniques to:
+- Detect abnormal driving patterns
+- Predict possible accident scenarios
+- Analyze sensor fusion data (GPS + motion + environment)
+- Trigger preventive alerts before critical failure
+- This reduces dependency on cloud and ensures low-latency decision making directly on the device.
+  
+## 🛠️Hardware Components
+- Raspberry Pi 4B (Main Processing Unit)
+- GPS Module (Location tracking)
+- GSM Module (Emergency communication)
+- MQ-3 Alcohol Sensor (Driver monitoring)
+- DHT11/DHT22 Sensor (Temperature & humidity)
+- Hall Sensor (Speed/RPM monitoring)
+- Raspberry Pi Camera Module V2 (Video recording)
+- MAX9814 Microphone Module (Audio recording)
+- 3.5” Touch Display (Real-time UI)
+- 18650 Li-ion Battery (Power backup)
+- 32GB Micro SD Card (Local storage)
 
-Unlike traditional systems, it:
-- Monitors vehicle conditions in real-time  
-- Predicts risks using AI/ML  
-- Sends instant emergency alerts  
+## 💻Software Stack
+- Raspberry Pi OS (64-bit)
+- Python 3 (Core logic & AI processing)
+- OpenCV (Computer vision & video processing)
+- TensorFlow Lite (Edge AI model execution)
+- Firebase (Cloud database & alerts)
+- SQLite / MySQL (Local structured storage)
+- Flask / Node.js (Web dashboard APIs)
+- Linux (System environment)
+- Apache / Nginx (Web server deployment)
 
----
+## ⚙️Working Principle
+- Sensors continuously collect vehicle and driver data
+- Raspberry Pi processes real-time inputs
+- AI model analyzes behavior and detects anomalies
+- GPS + GSM module sends emergency alerts if crash detected
+- Camera records incident footage automatically
+- Data is stored locally and synced to cloud dashboard
+- User can view live vehicle status on web/mobile interface
 
-## 🎯 Key Features
-
-### ✨ Real-Time Monitoring
-- 📍 GPS tracking  
-- 🚗 Speed & motion detection  
-- 🌡️ Environment sensing  
-
-### 📸 Video Capture
-- Continuous recording  
-- Accident evidence storage  
-
-### 🧠 AI & ML Intelligence
-- Driver behavior analysis  
-- Risk prediction  
-- Anomaly detection  
-
-### 📡 Emergency Alerts
-- GSM-based SMS/call alerts  
-- Live GPS location  
-
-### 🔗 Communication
-- ESP32 → Raspberry Pi  
-- Cloud sync  
-
-### ☁️ Cloud & Dashboard
-- Firebase / MySQL  
-- Grafana visualization  
-
-### 💾 Storage
-- SD card backup  
-- Crash-proof logging  
-
----
-
-## 🏗️ System Architecture
-Sensors (ESP32)
-↓
-Wireless Communication
-↓
-Raspberry Pi (AI Processing)
-↓
-Cloud Database
-↓
-Web Dashboard
-↓
-User Alerts
-
-
----
-
-## 🔧 Hardware Components
-
-- 🧠 Raspberry Pi 4B  
-- 📡 ESP32  
-- 📍 GPS Module  
-- 📶 GSM Module  
-- 🍺 MQ-3 Sensor  
-- 🌡️ DHT11  
-- ⚙️ Hall Sensor  
-- 🎤 MAX9814 Mic  
-- 📷 Camera  
-- 🔋 Battery  
-- 💽 SD Card  
-
----
-
-## 💻 Software Stack
-
-- 🐍 Python  
-- 👁️ OpenCV  
-- 🌐 Flask  
-- 🐧 Linux  
-- ☁️ Firebase / MySQL  
-- 📊 Grafana  
-- 🤖 TensorFlow Lite  
-
----
-
-## ⚙️ Working Principle
-
-1. Sensors collect data  
-2. ESP32 sends data  
-3. Raspberry Pi processes it  
-4. AI detects anomalies  
-5. Data stored + cloud upload  
-
-### 🚨 Accident Case
-- Alert triggered  
-- GPS sent  
-- Evidence saved  
-
----
-
-## 🔍 Research Gap
-
-### ❌ Traditional
-- No intelligence  
-- No alerts  
-
-### ✅ Our System
-- AI prediction  
-- Real-time alerts  
-- Smart integration  
-
----
-
-## 📈 Future Scope
-
-- 🚘 Autonomous systems  
-- 📱 Mobile app  
-- 🤖 Deep learning  
-- 🚦 Smart traffic  
-- 🛰️ 5G  
-
----
-
-## 👨‍💻 Contributors
-- **Biswajit Pattanaik**
-
----
-
-## 🏫 Institution
-Centurion University of Technology and Management, Bhubaneswar
-
----
-
-## 🌟 Impact
-
-- Saves lives  
-- Reduces accidents  
-- Provides real-time insights  
-
----
-
-## 🔥 Tagline
-
-> Turning Vehicles into Intelligent Safety Systems using AI & IoT
-
-
----
-
-
-
-## flowchart LR
-
-<p align="center">
-  <img src="https://quickchart.io/graphviz?graph=digraph{rankdir=LR;Sensors->ESP32->RaspberryPi->AI->Cloud->Dashboard->User;AI->Accident;Accident->GPS;Accident->Camera}" />
-</p>
- ## Circuit Digram
-<img width="2000" height="913" alt="image" src="https://github.com/user-attachments/assets/e962832a-b9a9-4b26-ba5a-5027c4e096b3" />
+## 📊System Architecture
+- Edge Layer: Raspberry Pi + Sensors + AI Model
+- Communication Layer: GSM + Wi-Fi
+- Cloud Layer: Firebase + Web Server
+- Application Layer: Dashboard + Monitoring Interface
+  
+## 🚀Objectives
+- Improve vehicle safety using intelligent monitoring
+- Enable real-time accident detection and response
+- Provide predictive analytics for driver behavior
+- Build a unified IoT + AI automotive safety platform
+  
+## 🔍Research Gap Addressed
+- Traditional black boxes are passive (only record data)
+- Lack of real-time intelligence and decision-making
+- No predictive accident prevention systems
+- No unified sensor + AI integration platform
+  
+## 📈Future Scope
+- Integration with autonomous vehicle systems
+- Deep learning-based driver emotion detection
+- V2X (Vehicle-to-Everything) communication
+- Integration with traffic police emergency systems
+- Advanced ADAS (Advanced Driver Assistance Systems)
+  
+## 🏆Conclusion
+This project successfully demonstrates a smart, AI-powered vehicle black box system that goes beyond traditional data logging. By combining embedded systems, IoT, and edge AI, it enhances road safety, enables real-time monitoring, and provides predictive intelligence for accident prevention.
