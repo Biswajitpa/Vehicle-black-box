@@ -35,7 +35,7 @@ The Edge AI Powered Vehicle Black Box is an intelligent automotive safety and mo
 - 💾 Local + cloud data storage (SD card + Firebase)
 - 📊 Web dashboard for live monitoring and analytics
 - 🔊 In-cabin audio recording for incident analysis
-- AI-Powered Multi-Class Detection System: Real-time model for detecting accident, drowsiness, danger road, driver presence, and normal road using 7,995 samples for smart vehicle monitoring with logging system for event tracking.
+- 🧠AI-Powered Multi-Class Detection System: Real-time model for detecting accident, drowsiness, danger road, driver presence, and normal road using 7,995 samples for smart vehicle monitoring with logging system for event tracking.
   
 ## 🧠System Intelligence (AI Layer)
 - The system uses Edge AI techniques to:
